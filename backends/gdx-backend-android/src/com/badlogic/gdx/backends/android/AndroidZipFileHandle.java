@@ -52,7 +52,8 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 			path += "/";
 	}
 
-	public AssetFileDescriptor getAssetFileDescriptor(String path) throws IOException {
+	@Override
+	public AssetFileDescriptor getAssetFileDescriptor() throws IOException {
 		return assetFd;
 	}
 
@@ -170,15 +171,11 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 
 	@Override
 	public long length() {
-		try {
-			return getAssetFileDescriptor("").getLength();
-		} catch (IOException e) {
-		}
-		return 0;
+		return assetFd != null ? assetFd.getLength() : 0;
 	}
 
 	@Override
 	public boolean exists() {
-		return expansionFile.getEntriesAt(getPath()).length != 0;
+		return assetFd != null || expansionFile.getEntriesAt(getPath()).length != 0;
 	}
 }
