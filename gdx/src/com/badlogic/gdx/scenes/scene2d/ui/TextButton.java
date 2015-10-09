@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -68,19 +68,38 @@ public class TextButton extends Button {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
-		Color fontColor;
-		if (isDisabled() && style.disabledFontColor != null)
-			fontColor = style.disabledFontColor;
-		else if (isPressed() && style.downFontColor != null)
-			fontColor = style.downFontColor;
-		else if (isChecked && style.checkedFontColor != null)
-			fontColor = (isOver() && style.checkedOverFontColor != null) ? style.checkedOverFontColor : style.checkedFontColor;
-		else if (isOver() && style.overFontColor != null)
-			fontColor = style.overFontColor;
-		else
-			fontColor = style.fontColor;
-		if (fontColor != null) label.getStyle().fontColor = fontColor;
-		super.draw(batch, parentAlpha);
+		 Color fontColor = null;
+		 float fontScale;
+		 if (isDisabled()) {
+			  if (style.disabledFontColor != null) {
+					fontColor = style.disabledFontColor;
+			  }
+			  fontScale = style.disabledFontScale;
+		 } else if (isPressed()) {
+			  if (style.downFontColor != null) {
+					fontColor = style.downFontColor;
+			  }
+			  fontScale = style.downFontScale;
+		 } else if (isChecked) {
+			  if (style.checkedFontColor != null) {
+					fontColor = (isOver() && style.checkedOverFontColor != null) ?
+						style.checkedOverFontColor :
+						style.checkedFontColor;
+			  }
+			  fontScale = isOver() ? style.checkedOverFontScale : style.checkedFontScale;
+		 } else if (isOver()) {
+			  if (style.overFontColor != null) {
+					fontColor = style.overFontColor;
+			  }
+			  fontScale = style.overFontScale;
+		 } else {
+			  fontColor = style.fontColor;
+			  fontScale = style.fontScale;
+		 }
+		 if (fontColor != null)
+			  label.getStyle().fontColor = fontColor;
+		 label.setFontScale(fontScale == 0 ? 1 : fontScale);
+		 super.draw(batch, parentAlpha);
 	}
 
 	public Label getLabel () {
@@ -105,6 +124,8 @@ public class TextButton extends Button {
 		public BitmapFont font;
 		/** Optional. */
 		public Color fontColor, downFontColor, overFontColor, checkedFontColor, checkedOverFontColor, disabledFontColor;
+		/** Optional. */
+		public float fontScale, downFontScale, overFontScale, checkedFontScale, checkedOverFontScale, disabledFontScale;
 
 		public TextButtonStyle () {
 		}
@@ -115,14 +136,26 @@ public class TextButton extends Button {
 		}
 
 		public TextButtonStyle (TextButtonStyle style) {
-			super(style);
-			this.font = style.font;
-			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
-			if (style.downFontColor != null) this.downFontColor = new Color(style.downFontColor);
-			if (style.overFontColor != null) this.overFontColor = new Color(style.overFontColor);
-			if (style.checkedFontColor != null) this.checkedFontColor = new Color(style.checkedFontColor);
-			if (style.checkedOverFontColor != null) this.checkedFontColor = new Color(style.checkedOverFontColor);
-			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
+	 		super(style);
+	 		this.font = style.font;
+	 		this.fontScale = style.fontScale == 0 ? 1 : style.fontScale;
+	 		if (style.fontColor != null)
+				  this.fontColor = new Color(style.fontColor);
+	 		if (style.downFontColor != null)
+				  this.downFontColor = new Color(style.downFontColor);
+	 		if (style.overFontColor != null)
+				  this.overFontColor = new Color(style.overFontColor);
+	 		if (style.checkedFontColor != null)
+				  this.checkedFontColor = new Color(style.checkedFontColor);
+	 		if (style.checkedOverFontColor != null)
+				  this.checkedFontColor = new Color(style.checkedOverFontColor);
+	 		if (style.disabledFontColor != null)
+				  this.disabledFontColor = new Color(style.disabledFontColor);
+	 		this.downFontScale = style.downFontScale == 0 ? this.fontScale : style.downFontScale;
+	 		this.overFontScale = style.overFontScale == 0 ? this.fontScale : style.overFontScale;
+	 		this.checkedFontScale = style.checkedFontScale == 0 ? this.checkedFontScale : style.checkedFontScale;
+	 		this.checkedOverFontScale = style.checkedOverFontScale == 0 ? this.fontScale : style.checkedOverFontScale;
+	 		this.disabledFontScale = style.disabledFontScale == 0 ? this.fontScale : style.disabledFontScale;
 		}
 	}
 }
